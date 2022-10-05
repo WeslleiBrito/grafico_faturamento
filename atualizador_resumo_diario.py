@@ -22,7 +22,7 @@ class AtualizaFaturamentoDiario:
     def __atualizador_planilha_google(self):
         planilha = self.__conector_planilha()
         faturamento = self.__faturamento
-        print(faturamento)
+        
         for indice, chave in enumerate(faturamento):
             planilha.update(f'B{indice + 2}', faturamento[chave])
 

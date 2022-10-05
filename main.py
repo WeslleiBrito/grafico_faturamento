@@ -25,15 +25,21 @@ def faturamentos(despesa_variavel=DespesasRateio().despesa_variavel, comissao=0)
         if len(str(dia)) < 2:
             dia = f'0{dia}'
 
-        cursor.execute \
-            (f'SELECT venda.total FROM `venda` WHERE venda.`data` BETWEEN "{ano}-{mes}-{dia}" and "{ano}-{mes}-{dia}"')
 
-        faturamento = round(sum([total[0] for total in cursor.fetchall()]) * (1 - (despesa_variavel + comissao)), 2)
-        fats.append(faturamento)
+        comando = f'SELECT venda_item.qtd, venda_item.qtd_devolvida, venda_item.total FROM venda_item WHERE venda_item.dtvenda BETWEEN "{ano}-{mes}-{dia}" and "{ano}-{mes}-{dia}";'
+        cursor.execute(comando)
+
+        faturamento_unitario = []
+        for item in cursor.fetchall():
+            if float(item[0]) - float(item[1]) > 0:
+                faturamento_unitario.append((float(item[2]) / float(item[0])) * (float(item[0]) - float(item[1])))
+        valor_faturado = round(sum(faturamento_unitario), 2)
+        fats.append(valor_faturado)
         datas.append(f'{dia}-{mes}-{ano}')
+        faturamento_unitario.clear()
 
-    return fats, datas
+    return fats, datas, comissao
 
 
 if __name__ == '__main__':
-    print(faturamentos())
+    print(faturamentos(comissao=1))

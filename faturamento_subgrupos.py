@@ -47,7 +47,6 @@ class FaturamentoSubgrupo:
 
         self.__cursor.execute(
             f'SELECT produto, SUM(qtd - qtd_devolvida), SUM(vrcusto_composicao * (qtd - qtd_devolvida)), SUM(desconto), SUM(total), SUM(qtd_devolvida)  FROM venda_item WHERE dtvenda BETWEEN "{self.__data_inicial}" AND "{self.__data_final}" GROUP BY descricao ORDER BY total DESC;')
-
         valores = self.__cursor.fetchall()
 
         return [(dados[0], dados[1], dados[2], float(dados[3]), float(dados[4]), dados[5]) for dados in valores]
@@ -90,5 +89,6 @@ class FaturamentoSubgrupo:
 
 
 if __name__ == '__main__':
-    fatura = FaturamentoSubgrupo()
-    print(fatura.faturamento_por_subgrupo)
+    fatura = FaturamentoSubgrupo(data_inicial='2022-10-01', data_final='2022-10-05').faturamento_total
+    print(fatura)
+

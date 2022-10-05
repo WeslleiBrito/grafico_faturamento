@@ -69,6 +69,10 @@ class Lucratividade:
     def vendas(self):
         return self.__dados_vendas()
 
+    @property
+    def dados_vendas(self):
+        return __dados_vendas()
+        
     def __vendedores(self):
         """
         :return: retorna duas lista uma com o código do vendedor e outra com o nome
@@ -343,11 +347,5 @@ class Lucratividade:
 
 
 if __name__ == '__main__':
-    lucratividade_geral = Lucratividade(comissao=1, data_inicial='2022-09-24', data_final='2022-09-24')
-
-    resumo_vendas = lucratividade_geral.lucratividade_por_venda
-
-    for vendas in resumo_vendas.items():
-        print(vendas)
-
+    lucratividade_geral = Lucratividade(comissao=1)
     print(lucratividade_geral.totais)

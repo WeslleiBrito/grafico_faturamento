@@ -8,7 +8,7 @@ class AtualizaMetasGoogleDrive:
         self.__tabela = aba_tabela
         self.__codigo_planilha = codigo_planilha
         self.__caminho_chave = caminho_chave
-        self.__resumo_lucro = ResumosLucro().resumo
+        self.__resumo_lucro = ResumosLucro(comissao=1).resumo
 
     @property
     def atualizador_dados_meta(self):
@@ -25,7 +25,7 @@ class AtualizaMetasGoogleDrive:
 
     def __atualizador_dados_meta(self):
         planilha = self.__conector_planilha()
-        print(self.__resumo_lucro)
+        
         legendas = ['Meta Vendas', 'Faturamento', 'Valor Meta Restante', 'Faturamento Real', 'Custo', 'Despesa Fixa',
                     'Lucro R$', 'Lucro %', 'Margem Real']
 
@@ -36,6 +36,7 @@ class AtualizaMetasGoogleDrive:
 
 
 if __name__ == '__main__':
+
     from atualizador_resumo_diario import AtualizaFaturamentoDiario
     aba = 'Dados'
     arquivo_chave = 'key.json'

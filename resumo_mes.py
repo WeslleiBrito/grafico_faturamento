@@ -2,6 +2,7 @@
 from datetime import date
 from validador import ultimo_dia_do_mes
 
+
 class ResumosLucro:
 
     def __init__(self, data_inicial='', data_final='', geral=False, comissao=0):
@@ -19,7 +20,7 @@ class ResumosLucro:
         from faturamento_subgrupos import FaturamentoSubgrupo
 
         from valores_padroes import data_inicial_padrao
-        
+
         self.__comissao = comissao
 
         if comissao > 0:
@@ -71,6 +72,10 @@ class ResumosLucro:
     def comissao(self):
         return self.__comissao
 
+    @property
+    def planilha_resumo(self):
+        return self.__planilha_resumo()
+
     def __resumo(self):
         from representa_despesa import DespesaSubgrupo
         porcentagem_variavel_global = DespesaSubgrupo().despesa_variavel
@@ -79,16 +84,31 @@ class ResumosLucro:
 
         dados = dict()
         dados['Faturamento Real'] = self.__faturamento_total
-        dados['Faturamento'] = round(self.__faturamento_total * (1 - (porcentagem_variavel_global + self.__comissao)), 2)
+        dados['Faturamento'] = round(self.__faturamento_total * (1 - (porcentagem_variavel_global + self.__comissao)),
+                                     2)
         dados['Custo'] = float(self.__custo_total)
         dados['Despesa Fixa'] = float(self.__despesa_fixa)
         dados['Comissão'] = round(self.__faturamento_total * self.__comissao, 2)
         dados['Saida total'] = self.__custo_total + dados['Despesa Fixa'] + dados['Comissão']
 
         dados['Lucro R$'] = round(dados['Faturamento'] - (dados['Despesa Fixa'] + dados['Custo']), 2)
-        dados['Lucro %'] = round((dados['Lucro R$'] / dados['Faturamento']) * 100, 3)
-        dados['Margem Real'] = round(((dados['Faturamento Real'] - dados['Custo']) / dados['Faturamento Real']) * 100, 2)
-        dados['Margem'] = round((dados['Faturamento'] - dados['Custo']) / dados['Faturamento'], 2)
+
+        if dados['Faturamento'] > 0.00:
+            dados['Lucro %'] = round((dados['Lucro R$'] / dados['Faturamento']) * 100, 3)
+            dados['Margem Real'] = round(
+                ((dados['Faturamento Real'] - dados['Custo']) / dados['Faturamento Real']) * 100, 2)
+            dados['Margem'] = round((dados['Faturamento'] - dados['Custo']) / dados['Faturamento'], 2)
+        else:
+            data_final = str(ultimo_dia_do_mes(mes=date.today().month - 1))
+            data_inicial = f'{data_final[0:8]}01'
+
+            avaliador = ResumosLucro(data_inicial=data_inicial, data_final=data_final, comissao=1).resumo
+
+            dados['Lucro %'] = 0.00
+            dados['Margem Real'] = avaliador['Margem Real']
+            dados['Margem'] = avaliador['Margem']
+            dados['Meta Vendas'] = 0.00
+
         dados['Meta Vendas'] = round(dados['Despesa Fixa'] / dados['Margem'], 2)
 
         if dados['Meta Vendas'] > dados['Faturamento']:
@@ -101,6 +121,25 @@ class ResumosLucro:
 
         return dados
 
+    def __planilha_resumo(self):
+        import pandas as pd
+        ano = date.today().year
+        meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DESEMBRO']
+
+        dic = self.__resumo()
+
+        for chave in dic:
+            dic[chave] = [dic[chave]]
+
+        tabela = pd.DataFrame(dic)
+        nome_planilha = f'{meses[self.__data_inicial.month - 1]}_{ano}.xlsx'
+        nome_aba = f'{meses[self.__data_inicial.month - 1]}'
+
+        return tabela.to_excel(excel_writer='C:\\Users\\9010\\Desktop\\Relatório de Lucratividade\\' + nome_planilha,
+                               sheet_name=nome_aba)
+
 
 if __name__ == '__main__':
-    print(ResumosLucro(comissao=1).resumo)
+    resumo = ResumosLucro(data_inicial='2022-10-01', data_final='2022-10-05', comissao=1, geral=False).resumo
+    print(resumo)

@@ -54,4 +54,4 @@ def valida_data(data: str):
 
 
 if __name__ == '__main__':
-    print(ultimo_dia_do_mes())
+    print(valida_data('2022-09-30').month)
