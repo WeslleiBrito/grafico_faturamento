@@ -71,8 +71,12 @@ class Lucratividade:
 
     @property
     def dados_vendas(self):
-        return __dados_vendas()
-        
+        return self.__dados_vendas()
+
+    @property
+    def data_de_consulta(self):
+        return self.__data_de_consulta()
+
     def __vendedores(self):
         """
         :return: retorna duas lista uma com o código do vendedor e outra com o nome
@@ -345,7 +349,18 @@ class Lucratividade:
         for chave in geral:
             dicionario_vendas[chave]
 
+    def __data_de_consulta(self):
+
+        data_inicial = str(self.__data_inicial)
+        data_final = str(self.__data_final)
+
+        if self.__data_inicial != self.__data_final:
+
+            return f'{data_inicial[8:]}-{data_inicial[5:7]}-{data_inicial[0:4]} a {data_final[8:]}-{data_final[5:7]}-{data_final[0:4]}'
+        else:
+            return f'{data_inicial[8:]}-{data_inicial[5:7]}-{data_inicial[0:4]}'
+
 
 if __name__ == '__main__':
-    lucratividade_geral = Lucratividade(comissao=1)
-    print(lucratividade_geral.totais)
+    lucratividade_geral = Lucratividade(comissao=1, data_inicial='2022-10-06', data_final='2022-10-07')
+    print(lucratividade_geral.data_de_consulta)

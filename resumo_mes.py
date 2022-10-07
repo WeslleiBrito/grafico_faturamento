@@ -141,5 +141,5 @@ class ResumosLucro:
 
 
 if __name__ == '__main__':
-    resumo = ResumosLucro(data_inicial='2022-10-01', data_final='2022-10-05', comissao=1, geral=False).resumo
+    resumo = ResumosLucro(comissao=1, geral=False).resumo
     print(resumo)

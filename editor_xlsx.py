@@ -1,7 +1,6 @@
 # coding: UTF-8
 from openpyxl import load_workbook
 from openpyxl.styles import Side, Border, NamedStyle, Font, Alignment
-from datetime import date
 from lucratividade import Lucratividade
 from resumo_lucratividade import CriaPlanilhaLucratividadeItem
 
@@ -13,10 +12,7 @@ planilha_base = CriaPlanilhaLucratividadeItem(dicionario_lucratividade_item).dic
 
 
 planilha_modelo = load_workbook('modelo_lucro_item.xlsx')
-data_atual = str(date.today())
-dia = data_atual[8:]
-mes = data_atual[5:7]
-ano = data_atual[0:4]
+data = lucratividades.data_de_consulta
 
 bordas = Side(border_style="thin", color="000000")
 valores = []
@@ -61,4 +57,4 @@ if totais['lucro'] and totais['faturamento'] != 0:
     planilha_modelo['Relatório'][f'G{index + 5}'] = 'Lucro %'
     planilha_modelo['Relatório'][f'H{index + 5}'] = round(totais['lucro'] / totais['faturamento'], 2) * 100
 
-planilha_modelo.save(rf'C:\Users\9010\Desktop\Relatório de Lucratividade\lucratividade_{dia}-{mes}-{ano}.xlsx')
+planilha_modelo.save(rf'C:\Users\9010\Desktop\Relatório de Lucratividade\lucratividade_{data}.xlsx')

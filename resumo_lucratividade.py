@@ -38,9 +38,8 @@ class CriaPlanilhaLucratividadeItem:
                 custo_total.append(valores['custo total'])
                 faturamento.append(valores['faturamento'])
                 lucro.append(valores['lucro'])
+                porcentagem.append(valores['porcentagem'])
 
-                if valores['lucro'] != 0:
-                    porcentagem.append(valores['porcentagem'])
 
         data = str(date.today())
         data = f'{data[8:]}-{data[5:7]}-{data[0:4]}'
@@ -51,10 +50,19 @@ class CriaPlanilhaLucratividadeItem:
              'Total': custo_total, 'Faturamento': faturamento, 'Lucro R$': lucro,
              'Lucro %': porcentagem})
 
+        # return {'Nº': venda, 'Vendedor': vendedor, 'Qtd': quantidade, 'Descrição': descricao, 'Custo': custo,
+        #         'D. Fixa': despesa_fixa, 'D.Variável': despesa_variavel, 'Comissão': comissao,
+        #         'Total': custo_total, 'Faturamento': faturamento, 'Lucro R$': lucro,
+        #         'Lucro %': porcentagem}
+
 
 if __name__ == '__main__':
+
     from lucratividade import Lucratividade
 
-    dicionario_lucratividade_item = Lucratividade(comissao=1).lucratividade_por_item
+    dicionario_lucratividade_item = Lucratividade(comissao=1, data_inicial='2022-10-06',
+                                                  data_final='2022-10-06').lucratividade_por_item
     dc = CriaPlanilhaLucratividadeItem(dicionario_lucratividade_item).dicionario_lista
 
+    for chave in dc:
+        print(f'{chave}: {len(dc[chave])}')
